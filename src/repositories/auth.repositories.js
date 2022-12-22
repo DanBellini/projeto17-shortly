@@ -1,7 +1,7 @@
 import connectionDB from "../database/db.js";
 
 async function selectEmail (email){
-    return connectionDB.query(`SELECT email FROM users WHERE email = $1`,[email]);
+    return connectionDB.query(`SELECT * FROM users WHERE email = $1`,[email]);
 }
 async function insertUser (name, email, passwordHash){
     return connectionDB.query(`
