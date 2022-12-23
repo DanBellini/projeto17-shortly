@@ -1,6 +1,6 @@
 import urlSchema from "../schemas/url.schema.js";
 import { nanoid } from "nanoid";
-import { insertIntoUrls, selectUrlById, selectUrlByShortUrl, updateVisitCount } from "../repositories/urls.repositories.js";
+import { deleteUrlFromTable, insertIntoUrls, selectUrlById, selectUrlByShortUrl, updateVisitCount } from "../repositories/urls.repositories.js";
 
 async function shortenUrl(req, res){
     const { url } = req.body;
@@ -57,6 +57,22 @@ async function redirectShortenUrl (req,res){
     } catch (error) {
         res.status(500).send(error.message);
     }
-}
+};
 
-export {shortenUrl, takeUrlWithId, redirectShortenUrl};
+async function deleteUrl(req,res){
+    const { id } = req.params;
+    const userId = res.locals.user;
+
+    try {
+        const promise = await selectUrlById(id);
+        if(!promise.rows[0]) return res.sendStatus(404);
+        if(promise.rows[0].userId !== userId) return res.sendStatus(401);
+
+        await deleteUrlFromTable(id);
+        res.sendStatus(204);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+};
+
+export {shortenUrl, takeUrlWithId, redirectShortenUrl, deleteUrl};

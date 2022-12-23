@@ -13,13 +13,13 @@ async function selectUrlById(id){
     return connectionDB.query(`
         SELECT * FROM urls WHERE id = $1
     `,[id]);
-}
+};
 
 async function selectUrlByShortUrl(shortUrl){
     return connectionDB.query(`
         SELECT * FROM urls WHERE "shortUrl" = $1
     `,[shortUrl])
-}
+};
 
 async function updateVisitCount(urlId){
     return connectionDB.query(`
@@ -30,5 +30,12 @@ async function updateVisitCount(urlId){
         WHERE
             id = $1
     `,[urlId])
-}
-export {insertIntoUrls, selectUrlById, selectUrlByShortUrl, updateVisitCount}
+};
+
+async function deleteUrlFromTable(id){
+    return connectionDB.query(`
+        DELETE FROM urls WHERE id = $1
+    `,[id])
+};
+
+export {insertIntoUrls, selectUrlById, selectUrlByShortUrl, updateVisitCount, deleteUrlFromTable}
