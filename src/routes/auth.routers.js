@@ -9,6 +9,6 @@ import { registerUser } from "../controllers/user.controllers.js";
 const router = Router();
 
 router.post('/singin', validationSchema(singInSchema), singInUser);
-router.post('/singup',validationSchema(registerSchema), registerUser);
+router.post('/singup', validationSchema(registerSchema), registerUser);
 
 export default router;

@@ -10,10 +10,11 @@ async function singInUser (req, res) {
     try {
         const user = await usersRepositories.selectEmail(email);
         
-        if(!user){
+        if(!user.rows.length){
             return res.sendStatus(401);
         }
-
+        
+        
         const passwordIsValid = bcrypt.compareSync(password, user.rows[0].password);
 
         if(!passwordIsValid){
@@ -26,6 +27,7 @@ async function singInUser (req, res) {
 
         return res.status(200).send(token);
     } catch (error) {
+        console.log(error)
         res.status(500).send(error.message);
     }
 };

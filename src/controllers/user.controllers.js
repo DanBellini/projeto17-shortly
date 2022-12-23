@@ -49,7 +49,18 @@ async function takeUserWithId(req,res){
         res.send(objectPromise);
     } catch (error) {
         res.status(500).send(error.message);
-    }
-}
+    };
+};
 
-export { registerUser, takeUserWithId };
+async function listRanking(req,res){
+    try {
+        const promise = await urlsRepositories.selectUrlsRanking();
+        console.log(promise)
+        res.send(promise.rows)
+    } catch (error) {
+        console.log(error)
+        res.status(500).send(error.message);
+    };
+};
+
+export { registerUser, takeUserWithId, listRanking};

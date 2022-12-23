@@ -61,6 +61,24 @@ async function selectUrlByUserId(userId){
     `,[userId]);
 };
 
+async function selectUrlsRanking(){
+    return connectionDB.query(`
+        SELECT
+            users.id,
+            users.name,
+                COUNT (urls.id)
+                    AS "linksCount",
+                SUM (urls."visitCount")
+                    AS "visitCount"
+        FROM urls
+        JOIN users
+            ON urls."userId" = users.id
+        GROUP BY users.id
+        ORDER BY "visitCount" DESC
+        LIMIT 10    
+    `)
+}
+
 const urlsRepositories = {
     insertIntoUrls,
     selectUrlById,
@@ -68,7 +86,8 @@ const urlsRepositories = {
     updateVisitCount,
     deleteUrlFromTable,
     selectSumVisitByUserId,
-    selectUrlByUserId
+    selectUrlByUserId,
+    selectUrlsRanking
 }
 
 export default urlsRepositories;
