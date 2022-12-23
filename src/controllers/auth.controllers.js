@@ -5,13 +5,15 @@ import { selectEmail, insertUser } from "../repositories/auth.repositories.js";
 import { insertSession } from "../repositories/sessions.repositories.js";
 
 async function registerUser (req, res) {
+    const {email, name, password, confirmPassword} = req.body;
+    
+    if(!confirmPassword) return res.status(422).send('"confirmPassword" must be [ref:password]');
+
     const validationSchema = authRegisterSchema.validate(req.body);
 
     if(validationSchema.error){
         return res.status(422).send(validationSchema.error.message);
     }
-
-    const {email, name, password} = req.body;
 
     const passwordHash = bcrypt.hashSync(password, 10);
 
@@ -52,8 +54,7 @@ async function singInUser (req, res) {
             return res.sendStatus(401);
         }
         const token = uuid();
-        const userId = user.id;
-
+        const userId = user.rows[0].id;
         await insertSession(token, userId);
 
         return res.status(200).send({token, name: user.rows[0].name})
@@ -62,5 +63,7 @@ async function singInUser (req, res) {
         res.status(500).send(error.message)
     }
 };
+
+//exemple token: 'bafc0f85-1efd-4588-a92a-8f1a8992b772'
 
 export {singInUser, registerUser};
