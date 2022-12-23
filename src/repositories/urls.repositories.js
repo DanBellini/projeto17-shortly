@@ -38,12 +38,37 @@ async function deleteUrlFromTable(id){
     `,[id])
 };
 
+async function selectSumVisitByUserId (userId){
+    return connectionDB.query(`
+        SELECT 
+            SUM (urls."visitCount") 
+        FROM 
+            urls
+        WHERE 
+            urls."userId" = $1
+    `,[userId]);
+};
+
+async function selectUrlByUserId(userId){
+    return connectionDB.query(`
+        SELECT 
+            id,
+            "shortUrl",
+            url,
+            "visitCount"
+        FROM urls 
+        WHERE urls."userId" = $1
+    `,[userId]);
+};
+
 const urlsRepositories = {
     insertIntoUrls,
     selectUrlById,
     selectUrlByShortUrl,
     updateVisitCount,
-    deleteUrlFromTable
+    deleteUrlFromTable,
+    selectSumVisitByUserId,
+    selectUrlByUserId
 }
 
 export default urlsRepositories;

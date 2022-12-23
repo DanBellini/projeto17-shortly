@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import usersRepositories from "../repositories/users.repositories.js";
+import urlsRepositories from "../repositories/urls.repositories.js";
 
 async function registerUser (req, res) {
     const {email, name, password, confirmPassword} = req.body;
@@ -22,4 +23,33 @@ async function registerUser (req, res) {
     
 };
 
-export { registerUser };
+async function takeUserWithId(req,res){
+    const { id } = req.params;
+    const userId = res.locals.user;
+
+    if(id!=userId) return res.sendStatus(401);
+
+    try {
+        const userPromise = await usersRepositories.selectUserById(userId);
+        const userName = userPromise.rows[0].name;
+
+        const visitPromise = await urlsRepositories.selectSumVisitByUserId(id);
+        const sumVisits = visitPromise.rows[0];
+
+        const urlsPromise = await urlsRepositories.selectUrlByUserId(id);
+        const listUrlsUser = urlsPromise.rows;
+
+        const objectPromise = {
+            id:id,
+            name:userName,
+            visitCount: sumVisits.sum || 0,
+            shortednedUrls: listUrlsUser
+        };
+        
+        res.send(objectPromise);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+}
+
+export { registerUser, takeUserWithId };

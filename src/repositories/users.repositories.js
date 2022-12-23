@@ -14,7 +14,7 @@ async function insertUser (name, email, passwordHash){
 
 async function selectUserById(userId){
     return connectionDB.query(`
-        SELECT id FROM users WHERE id = $1
+        SELECT * FROM users WHERE id = $1
     `,[userId])
 };
 
