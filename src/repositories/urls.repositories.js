@@ -38,4 +38,12 @@ async function deleteUrlFromTable(id){
     `,[id])
 };
 
-export {insertIntoUrls, selectUrlById, selectUrlByShortUrl, updateVisitCount, deleteUrlFromTable}
+const urlsRepositories = {
+    insertIntoUrls,
+    selectUrlById,
+    selectUrlByShortUrl,
+    updateVisitCount,
+    deleteUrlFromTable
+}
+
+export default urlsRepositories;

@@ -1,21 +1,13 @@
-import urlSchema from "../schemas/url.schema.js";
 import { nanoid } from "nanoid";
-import { deleteUrlFromTable, insertIntoUrls, selectUrlById, selectUrlByShortUrl, updateVisitCount } from "../repositories/urls.repositories.js";
+import urlsRepositories from "../repositories/urls.repositories.js";
 
 async function shortenUrl(req, res){
     const { url } = req.body;
-
-    const validationSchema = urlSchema.validate(req.body)
-    if(validationSchema.error){
-        return res.status(422).send(error.message)
-    }
-
     const userId = res.locals.user;
-
     const shortUrl = nanoid(8);
 
     try {
-        await insertIntoUrls(url, userId, shortUrl);
+        await urlsRepositories.insertIntoUrls(url, userId, shortUrl);
         res.status(201).send({shortUrl})
     } catch (error) {
         res.status(500).send(error.message);
@@ -26,7 +18,7 @@ async function takeUrlWithId(req,res){
     const { id } = req.params;
 
     try {
-        const promise = await selectUrlById(id);
+        const promise = await urlsRepositories.selectUrlById(id);
 
         const objectPromise = promise.rows[0];
         if(!objectPromise) return res.sendStatus(404);
@@ -46,12 +38,12 @@ async function takeUrlWithId(req,res){
 async function redirectShortenUrl (req,res){
     const { shortUrl } = req.params;
     try {
-        const promise = await selectUrlByShortUrl(shortUrl);
+        const promise = await urlsRepositories.selectUrlByShortUrl(shortUrl);
         if(!promise.rows[0]) return res.sendStatus(404);
 
         const url = promise.rows[0];
 
-        await updateVisitCount(url.id);
+        await urlsRepositories.updateVisitCount(url.id);
 
         res.redirect(url.url);
     } catch (error) {
@@ -64,11 +56,11 @@ async function deleteUrl(req,res){
     const userId = res.locals.user;
 
     try {
-        const promise = await selectUrlById(id);
+        const promise = await urlsRepositories.selectUrlById(id);
         if(!promise.rows[0]) return res.sendStatus(404);
         if(promise.rows[0].userId !== userId) return res.sendStatus(401);
 
-        await deleteUrlFromTable(id);
+        await urlsRepositories.deleteUrlFromTable(id);
         res.sendStatus(204);
     } catch (error) {
         res.status(500).send(error.message);

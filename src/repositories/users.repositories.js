@@ -16,6 +16,12 @@ async function selectUserById(userId){
     return connectionDB.query(`
         SELECT id FROM users WHERE id = $1
     `,[userId])
-}
+};
 
-export { selectEmail, insertUser, selectUserById }
+const usersRepositories = { 
+    selectEmail, 
+    insertUser, 
+    selectUserById 
+};
+
+export default usersRepositories;

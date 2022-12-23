@@ -1,9 +1,14 @@
 import { Router } from "express";
-import { singInUser, registerUser } from "../controllers/singAndRegister.controllers.js";
+import { validationSchema } from "../middlewares/validationSchema.middleware.js";
+import singInSchema from "../schemas/singIn.schema.js";
+import registerSchema from "../schemas/register.schema.js";
+import { singInUser }from "../controllers/auth.controllers.js";
+import { registerUser } from "../controllers/user.controllers.js";
+
 
 const router = Router();
 
-router.post('/singin', singInUser);
-router.post('/singup', registerUser);
+router.post('/singin', validationSchema(singInSchema), singInUser);
+router.post('/singup',validationSchema(registerSchema), registerUser);
 
 export default router;

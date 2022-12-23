@@ -1,5 +1,5 @@
-import { selectUserById } from "../repositories/users.repositories.js";
-import { selectSession } from "../repositories/sessions.repositories.js";
+import usersRepositories from "../repositories/users.repositories.js";
+import sessionsRepositories from "../repositories/sessions.repositories.js";
 
 async function authSessionMiddleware(req, res, next){
     const { authorization } = req.headers;
@@ -10,7 +10,7 @@ async function authSessionMiddleware(req, res, next){
         return res.status(401).send("Chave não encontrada, tente novamente!");
     }
     try {
-        const session = await selectSession(token);
+        const session = await sessionsRepositories.selectSession(token);
 
         if(!session.rows[0]){
             return res.status(401).send("Essa sessão não existe!");
@@ -18,7 +18,7 @@ async function authSessionMiddleware(req, res, next){
 
         const userId = session.rows[0].userId;
         
-        const userExists = await selectUserById(userId);
+        const userExists = await usersRepositories.selectUserById(userId);
 
         if(!userExists.rows[0]){
             return res.status(401).send("Usuário não encontrado!");

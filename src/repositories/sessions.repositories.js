@@ -14,4 +14,9 @@ async function selectSession(token){
     `,[token]);
 }
 
-export {insertSession, selectSession}
+const sessionsRepositories ={
+    insertSession,
+    selectSession
+}
+
+export default sessionsRepositories;
