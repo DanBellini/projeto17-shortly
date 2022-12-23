@@ -6,7 +6,12 @@ async function insertSession(token, userId){
             (token, "userId")
         VALUES
             ($1, $2)
-    `,[token, userId])
+    `,[token, userId]);
+}
+async function selectSession(token){
+    return connectionDB.query(`
+        SELECT * FROM sessions WHERE token = $1
+    `,[token]);
 }
 
-export {insertSession}
+export {insertSession, selectSession}

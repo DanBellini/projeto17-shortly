@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { v4 as uuid} from "uuid";
 import { authRegisterSchema, authSingInSchema } from "../schemas/auth.schemas.js";
-import { selectEmail, insertUser } from "../repositories/auth.repositories.js";
+import { selectEmail, insertUser } from "../repositories/users.repositories.js";
 import { insertSession } from "../repositories/sessions.repositories.js";
 
 async function registerUser (req, res) {
@@ -59,11 +59,9 @@ async function singInUser (req, res) {
 
         return res.status(200).send({token, name: user.rows[0].name})
     } catch (error) {
-        console.log(error)
         res.status(500).send(error.message)
     }
 };
 
-//exemple token: 'bafc0f85-1efd-4588-a92a-8f1a8992b772'
 
 export {singInUser, registerUser};
