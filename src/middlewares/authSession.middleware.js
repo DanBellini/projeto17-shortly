@@ -1,4 +1,3 @@
-//exemple token: 'bafc0f85-1efd-4588-a92a-8f1a8992b772'
 import { selectUserById } from "../repositories/users.repositories.js";
 import { selectSession } from "../repositories/sessions.repositories.js";
 
@@ -14,7 +13,7 @@ async function authSessionMiddleware(req, res, next){
         const session = await selectSession(token);
 
         if(!session.rows[0]){
-            return res.status(401).send("Essa sessão não existe!")
+            return res.status(401).send("Essa sessão não existe!");
         }
 
         const userId = session.rows[0].userId;
@@ -22,13 +21,12 @@ async function authSessionMiddleware(req, res, next){
         const userExists = await selectUserById(userId);
 
         if(!userExists.rows[0]){
-            return res.status(401).send("Usuário não encontrado!")
+            return res.status(401).send("Usuário não encontrado!");
         }
         
-        res.locals.user = userId
+        res.locals.user = userId;
         next();
     } catch (error) {
-        console.log(error.message)
         return res.status(500).send(error.message);
     }
 };
