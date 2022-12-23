@@ -1,13 +1,19 @@
 import urlSchema from "../schemas/url.schema.js";
 import { nanoid } from "nanoid";
-import { insertIntoUrls } from "../repositories/urls.repositories.js";
+import { insertIntoUrls, selectUrlById } from "../repositories/urls.repositories.js";
 
 async function shortenUrl(req, res){
     const { url } = req.body;
+
+    const validationSchema = urlSchema.validate(req.body)
+    if(validationSchema.error){
+        return res.status(422).send(error.message)
+    }
+
     const userId = res.locals.user;
 
     const shortUrl = nanoid(8);
-    console.log({shortUrl})
+
     try {
         await insertIntoUrls(url, userId, shortUrl);
         res.status(201).send({shortUrl})
@@ -17,4 +23,26 @@ async function shortenUrl(req, res){
     }
 };
 
-export {shortenUrl}
+async function takeUrlWithId(req,res){
+    
+    const { id } = req.params;
+    console.log(id)
+
+    try {
+        const promise = await selectUrlById(id);
+        const objectPromise = promise.rows[0];
+        if(!objectPromise) return res.sendStatus(404);
+        const newObjectPromise = {
+            id:objectPromise.id,
+            shortUrl:objectPromise.shortUrl,
+            url:objectPromise.url
+        }
+
+        res.status(200).send(newObjectPromise);
+    } catch (error) {
+        console.log(error)
+        res.status(500).send(error.message)
+    }
+}
+
+export {shortenUrl, takeUrlWithId}

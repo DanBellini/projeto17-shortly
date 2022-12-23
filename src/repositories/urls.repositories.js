@@ -6,7 +6,13 @@ async function insertIntoUrls(url, userId, shortUrl){
             (url, "shortUrl", "userId")
         VALUES
             ($1, $2, $3)
-    `,[url, shortUrl, userId])
+    `,[url, shortUrl, userId]);
 };
 
-export {insertIntoUrls}
+async function selectUrlById(id){
+    return connectionDB.query(`
+        SELECT * FROM urls WHERE id = $1
+    `,[id]);
+}
+
+export {insertIntoUrls, selectUrlById}
