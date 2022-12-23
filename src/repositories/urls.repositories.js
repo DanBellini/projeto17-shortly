@@ -15,4 +15,20 @@ async function selectUrlById(id){
     `,[id]);
 }
 
-export {insertIntoUrls, selectUrlById}
+async function selectUrlByShortUrl(shortUrl){
+    return connectionDB.query(`
+        SELECT * FROM urls WHERE "shortUrl" = $1
+    `,[shortUrl])
+}
+
+async function updateVisitCount(urlId){
+    return connectionDB.query(`
+        UPDATE 
+            urls
+        SET 
+            "visitCount" = "visitCount" + 1
+        WHERE
+            id = $1
+    `,[urlId])
+}
+export {insertIntoUrls, selectUrlById, selectUrlByShortUrl, updateVisitCount}
